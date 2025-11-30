@@ -8,9 +8,18 @@ export default defineConfig({
     port: 3000,
     strictPort: true,
 
+    allowedHosts: [
+      process.env.REPL_SLUG + "-" +
+      process.env.REPL_ID + ".pike.replit.dev"
+    ],
+
     hmr: {
       protocol: 'wss',
-      host: `${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`,
+      host:
+        process.env.REPL_SLUG +
+        "-" +
+        process.env.REPL_ID +
+        ".pike.replit.dev",
     },
 
     fs: {
