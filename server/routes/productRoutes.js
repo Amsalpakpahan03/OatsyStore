@@ -10,7 +10,7 @@ const {
 
 router.get("/", getProducts);
 
-// ⬅ FORM-DATA + FILE UPLOAD
+// upload single file
 router.post("/", upload.single("image"), addProduct);
 
 router.delete("/:id", deleteProduct);
