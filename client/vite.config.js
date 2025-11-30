@@ -5,35 +5,27 @@ import tailwindcss from 'tailwindcss';
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    // Pengaturan ini memastikan server Dev Vite dapat dijangkau di cloud
+    // WAJIB: Atur host ke 0.0.0.0 agar dapat diakses dari luar kontainer Replit
     host: '0.0.0.0', 
     port: 3000, 
 
-    // --- TAMBAHAN KRITIS UNTUK MENGATASI BLOCKED HOST DI REPLIT ---
+    // --- SOLUSI OTOMATIS: Mengizinkan SEMUA HOST (Wildcard) ---
     
-    // GANTI DENGAN HOST ID TERBARU ANDA JIKA INI TIDAK BERHASIL
-    // Cek console untuk ID host yang diblokir saat ini.
-    const dynamicHost = '2270acf4-173c-4acb-810c-f462ab055f29-00-1yisk920q8334.sisko.replit.dev';
-
-    // Metode 1: Mengizinkan akses File System dari host spesifik
-    fs: {
-        allow: [
-            '.', // Mengizinkan akses file lokal
-            dynamicHost, // Host Replit yang diblokir
-        ],
-    },
-    
-    // Metode 2: Mengatur Ulang HMR (Penting untuk cloud env)
+    // 1. Mengizinkan semua host untuk koneksi HMR/websocket
+    // (Gunakan host: '0.0.0.0' dan port 443 (HTTPS) untuk cloud env)
     hmr: {
         protocol: 'ws',
-        clientPort: 443, // Port default untuk HTTPS
-        host: dynamicHost,
+        clientPort: 443, 
+        host: '0.0.0.0',
     },
     
-    // Metode 3: Secara eksplisit izinkan host (Untuk kasus Vite yang sangat ketat)
-    allowedHosts: [
-        dynamicHost,
-    ],
+    // 2. Mengizinkan semua host mengakses server (mematikan fitur host blocking Vite)
+    allowedHosts: ['*'], // Ini akan memecahkan masalah "Blocked Request"
+    
+    // 3. Mengizinkan akses File System dari direktori proyek
+    fs: {
+        allow: ['.'],
+    },
     // --------------------------------------------------------------------
   },
 });
