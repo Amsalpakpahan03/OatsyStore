@@ -5,27 +5,31 @@ import tailwindcss from 'tailwindcss';
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    // WAJIB: Atur host ke 0.0.0.0 agar dapat diakses dari luar kontainer Replit
+    // WAJIB: Host untuk container agar dapat dijangkau
     host: '0.0.0.0', 
     port: 3000, 
 
-    // --- SOLUSI OTOMATIS: Mengizinkan SEMUA HOST (Wildcard) ---
-    
-    // 1. Mengizinkan semua host untuk koneksi HMR/websocket
-    // (Gunakan host: '0.0.0.0' dan port 443 (HTTPS) untuk cloud env)
+    // --- HOST DINAMIS SAAT INI (Diambil dari pesan error Anda) ---
+    const dynamicHost = '3cfcb196-0f15-415b-9965-6f9accb864df-00-3bskbehj7jnr6.sisko.replit.dev';
+
+    // Menonaktifkan pemeriksaan host yang ketat (solusi final untuk host blocking)
+    disableHostCheck: true, 
+
+    // 1. Konfigurasi HMR (Websockets)
     hmr: {
-        protocol: 'ws',
-        clientPort: 443, 
-        host: '0.0.0.0',
+        protocol: 'wss',
+        clientPort: 443, // Port standar HTTPS
+        host: dynamicHost,
     },
     
-    // 2. Mengizinkan semua host mengakses server (mematikan fitur host blocking Vite)
-    allowedHosts: ['*'], // Ini akan memecahkan masalah "Blocked Request"
+    // 2. Memastikan Vite mengizinkan akses dari host ini (wajib jika wildcard gagal)
+    allowedHosts: [
+        dynamicHost,
+    ],
     
-    // 3. Mengizinkan akses File System dari direktori proyek
+    // 3. Mengizinkan akses File System
     fs: {
         allow: ['.'],
     },
-    // --------------------------------------------------------------------
   },
 });
