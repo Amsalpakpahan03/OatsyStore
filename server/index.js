@@ -1,47 +1,27 @@
-const express = require('express');
-const path = require('path');
-const connectDB = require('./db');
-const orderRoutes = require('./orderRoutes');
-const productRoutes = require('./routes/productRoutes');
+const express = require("express");
+const path = require("path");
+const connectDB = require("./db");
+const orderRoutes = require("./orderRoutes");
+const productRoutes = require("./routes/productRoutes");
+const cors = require("cors");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Connect MongoDB
 connectDB();
 
-// JSON parser
+// CORS fix (allow all for deploy)
+app.use(cors());
 app.use(express.json());
 
-// // CORS
-// app.use((req, res, next) => {
-//     res.header('Access-Control-Allow-Origin', '*');
-//     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-//     next();
-// });
-// CORS FIX
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "http://localhost:5173"); // FE address
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+// folder uploads
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-    // Handle preflight
-    if (req.method === "OPTIONS") {
-        return res.sendStatus(200);
-    }
+// API routes
+app.use("/api", orderRoutes);
+app.use("/api/admin/products", productRoutes);
 
-    next();
-});
-
-
-// Expose uploads folder
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Routes
-app.use('/api', orderRoutes);
-app.use('/api/admin/products', productRoutes);
-
-// Start server
 app.listen(PORT, () => {
-    console.log(`Server BE Oatsy Store berjalan di http://localhost:${PORT}`);
+  console.log(`Backend running at http://localhost:${PORT}`);
 });
