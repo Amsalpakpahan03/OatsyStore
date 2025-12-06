@@ -12,15 +12,14 @@ const PORT = process.env.PORT || 3000;
 // Connect MongoDB
 connectDB();
 
-// CORS fix (allow all for deploy)
-app.use(cors());
+// CORS fix — allow all (untuk deploy Replit)
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
 app.use(express.json());
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
 
 // folder uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -30,6 +29,6 @@ app.use("/api", orderRoutes);
 app.use("/api/admin/products", productRoutes);
 app.use("/api", reviewRoutes);
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Backend running at http://localhost:${PORT}`);
 });
