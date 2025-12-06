@@ -1,10 +1,16 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
-// Storage untuk folder /uploads
+// Pastikan folder /uploads ada
+const uploadDir = path.join(__dirname, "..", "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -12,7 +18,6 @@ const storage = multer.diskStorage({
   },
 });
 
-// Filter hanya menerima gambar
 const fileFilter = (req, file, cb) => {
   const allowed = ["image/jpeg", "image/png", "image/jpg"];
   if (allowed.includes(file.mimetype)) {
@@ -22,6 +27,4 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({ storage, fileFilter });
-
-module.exports = upload;
+module.exports = multer({ storage, fileFilter });

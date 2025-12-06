@@ -28,16 +28,13 @@ exports.addProduct = async (req, res) => {
       });
     }
 
-    // Cek file
-    const imagePath = req.file
-      ? `/uploads/${req.file.filename}`
-      : null;
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
 
     const product = new Product({
       name,
       price,
-      desc: desc || "",
-      image: imagePath,
+      desc,
+      image: imagePath
     });
 
     await product.save();
@@ -45,7 +42,10 @@ exports.addProduct = async (req, res) => {
     res.json({
       success: true,
       message: "Produk berhasil ditambahkan!",
-      product,
+      product: {
+        ...product._doc,
+        image_url: process.env.BASE_URL + imagePath
+      }
     });
   } catch (err) {
     console.error("Error adding product:", err);
