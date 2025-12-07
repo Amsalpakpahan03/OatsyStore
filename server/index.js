@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const connectDB = require("./db");
@@ -29,6 +30,7 @@ app.use("/api", orderRoutes);
 app.use("/api/admin/products", productRoutes);
 app.use("/api", reviewRoutes);
 
+// PERBAIKAN DI SINI: Menggunakan "0.0.0.0" agar bisa diakses public via Replit
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Backend running at http://localhost:${PORT}`);
+  console.log(`Backend running at http://0.0.0.0:${PORT}`);
 });
